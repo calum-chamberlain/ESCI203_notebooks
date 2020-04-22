@@ -38,9 +38,9 @@ class Picker():
     _response_removed = False
     _tools = ["pan", "box_zoom", "undo", "redo", "reset", "save", HoverTool(
         tooltips=[
-            ("UTCDateTime", "@x{%m/%d %H:%M:%S.%3N}"),
+            ("UTC Date Time", '@x{%d/%m %H:%M:%S.%3N}'),
             ("Amplitude", "@y")],
-        formatters={'x': 'datetime'},
+        formatters={'@x': 'datetime'},
         mode='vline')]
 
     def __init__(
@@ -151,7 +151,7 @@ class Picker():
         self, 
         data_color: str = "darkblue",
     ):
-        self.st.sort()
+        self.st.sort(["starttime", "network", "station", "location", "channel"])
         min_time, max_time = (
             min(tr.stats.starttime for tr in self.st).datetime, 
             max(tr.stats.endtime for tr in self.st).datetime)
