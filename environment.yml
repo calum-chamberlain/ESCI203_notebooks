@@ -1,0 +1,6 @@
+name: ESCI203
+dependencies:
+  - numpy
+  - obspy
+  - bokeh
+  - jupyter
