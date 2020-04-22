@@ -38,7 +38,7 @@ class Picker():
     _response_removed = False
     _tools = ["pan", "box_zoom", "undo", "redo", "reset", "save", HoverTool(
         tooltips=[
-            ("UTC Date Time", '@x{%d/%m %H:%M:%S.%3N}'),
+            ("UTC Date Time", '@x{%Y/%m/%d %H:%M:%S.%3N}'),
             ("Amplitude", "@y")],
         formatters={'@x': 'datetime'},
         mode='vline')]
