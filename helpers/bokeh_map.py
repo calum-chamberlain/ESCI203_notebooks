@@ -26,7 +26,7 @@ Station = namedtuple("station", ["code", "latitude", "longitude"])
 class CircleMap():
     _proj_in = Proj(init='epsg:4326')
     _map_proj = Proj(init='epsg:3857')
-    _precision = 500 # Precision of locations in meters
+    _precision = 1000 # Precision of locations in meters
     _slider_step = 0.1 # Slider step size in km
     def __init__(self, inventory: Inventory):
         self.stations = {Station(sta.code, chan.latitude, chan.longitude)
@@ -66,12 +66,9 @@ class CircleMap():
         plot_width: int = 900,
         output: str = None,
     ):
-        #TODO: hovertool to give lat, lon of cursor so students can read off location
         # Set up map options
         map_hover = HoverTool(
             tooltips=[
-                ("x", "@x{0.00}"),
-                ("y", "@y{0.00}"),
                 ("Latitude", "@lats"),
                 ("Longitude", "@lons")], names=["locs"])
         map_options = dict(
@@ -86,8 +83,8 @@ class CircleMap():
             print("Setting map bounds to NZ")
             min_lat, min_lon, max_lat, max_lon = (-47., 165., -34., 179.9)
         # Add a 10% pad
-        lat_pad = 0.1 * (max_lat - min_lat)
-        lon_pad = 0.1 * (max_lon - min_lon)
+        lat_pad = 0.25 * (max_lat - min_lat)
+        lon_pad = 0.25 * (max_lon - min_lon)
         min_lat = min_lat - lat_pad
         max_lat = max_lat + lat_pad
         min_lon = min_lon - lon_pad
@@ -106,11 +103,11 @@ class CircleMap():
             x_range=map_x_range, y_range=map_y_range,
             x_axis_type="mercator", y_axis_type="mercator", match_aspect=True,
             **map_options)
-        # url = 'http://a.basemaps.cartocdn.com/rastertiles/voyager/{Z}/{X}/{Y}.png'
-        # attribution = "Tiles by Carto, under CC BY 3.0. Data by OSM, under ODbL"
-        # map_plot.add_tile(WMTSTileSource(url=url, attribution=attribution))
-        tile_provider = get_provider(CARTODBPOSITRON)
-        map_plot.add_tile(tile_provider)
+        url = 'http://a.basemaps.cartocdn.com/rastertiles/voyager/{Z}/{X}/{Y}.png'
+        attribution = "Tiles by Carto, under CC BY 3.0. Data by OSM, under ODbL"
+        map_plot.add_tile(WMTSTileSource(url=url, attribution=attribution))
+        # tile_provider = get_provider(CARTODBPOSITRON)
+        # map_plot.add_tile(tile_provider)
 
         # Plot stations
         station_source = ColumnDataSource({

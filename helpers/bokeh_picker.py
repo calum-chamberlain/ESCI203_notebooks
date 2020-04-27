@@ -138,8 +138,8 @@ class Picker():
 
     def pick(
         self,         
-        plot_height: int = 900, 
-        plot_width: int = 1800,
+        plot_height: int = 1000, 
+        plot_width: int = 1400,
         output = None,
     ):
         trace_plots = self._define_plot()
@@ -286,7 +286,7 @@ if __name__ == "__main__":
         "-n", "--n-stations", type=int, default=5, 
         help="Number of stations to download")
     parser.add_argument(
-        "-l", "--length", type=float, default=100., 
+        "-l", "--length", type=float, default=60., 
         help="Length in seconds to download and plot")
     parser.add_argument(
         "-o", "--output", type=str, required=False, 
