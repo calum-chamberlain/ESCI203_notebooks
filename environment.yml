@@ -6,3 +6,4 @@ dependencies:
   - bokeh>=2
   - jupyter
   - pyproj
+  - proj4<6
