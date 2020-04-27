@@ -10,7 +10,7 @@ from collections import namedtuple
 from obspy import Inventory, UTCDateTime
 from obspy.clients.fdsn import Client
 
-from bokeh.plotting import figure, show, output_file
+from bokeh.plotting import figure, show, output_file, save
 from bokeh.layouts import column, row
 from pyproj import Proj, transform
 from bokeh.models import (
@@ -61,7 +61,8 @@ class CircleMap():
     def plot(
         self,
         plot_height: int = 600, 
-        plot_width: int = 600
+        plot_width: int = 600,
+        output: str = None,
     ):
         #TODO: hovertool to give lat, lon of cursor so students can read off location
         # Set up map options
@@ -158,13 +159,18 @@ class CircleMap():
 
         layout = row(map_plot, column(*sliders))
 
-        show(layout)
+        if output:
+            output_file(output)
+            save(layout)
+        else:
+            show(layout)
 
 
 def circle_map(
     stations: List[str] = None,
     client: Client = None,
     time: UTCDateTime = None,
+    output: str = None,
 ):
     import warnings
 
@@ -188,7 +194,7 @@ def circle_map(
                             if chan.code in acceptable_channels]
 
 
-    CircleMap(inventory=inv).plot()
+    CircleMap(inventory=inv).plot(output=output)
     return
 
 
@@ -210,9 +216,13 @@ if __name__ == "__main__":
         "-t", "--time", type=str, 
         help="UTCDateTime parseable string for when to plot the stations for.",
         default="2019-12-08")
+    parser.add_argument(
+        "-o", "--output", type=str, required=False, 
+        help="File output to, otherwise, will show")
 
     args = parser.parse_args()
     args.time = UTCDateTime(args.time)
 
     client = Client(args.client)
-    circle_map(stations=args.stations, client=client, time=args.time)
+    circle_map(stations=args.stations, client=client, time=args.time, 
+               output=args.output)

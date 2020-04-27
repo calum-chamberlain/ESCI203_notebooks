@@ -14,7 +14,7 @@ from typing import Iterable
 
 from obspy import Stream, Inventory
 from obspy.clients.fdsn import Client
-from bokeh.plotting import figure, show
+from bokeh.plotting import figure, show, output_file, save
 from bokeh.models import (
     HoverTool, ColumnDataSource, Legend, DataTable, TableColumn, PointDrawTool, 
     ColumnDataSource, DateFormatter)
@@ -139,13 +139,19 @@ class Picker():
     def pick(
         self,         
         plot_height: int = 900, 
-        plot_width: int = 1000
+        plot_width: int = 1800,
+        output = None,
     ):
         trace_plots = self._define_plot()
-        show(gridplot(trace_plots, ncols=1,
+        layout = gridplot(trace_plots, ncols=1,
             # [[_trace_plot, _table] 
             #  for _trace_plot, _table in zip(trace_plots, tables)],
-            plot_width=plot_width, plot_height=int(plot_width / len(self.st))))
+            plot_width=plot_width, plot_height=int(plot_height / len(self.st)))
+        if output:
+            output_file(output, title="Picker")
+            save(layout)
+        else:
+            show(layout)
 
     def _define_plot(
         self, 
@@ -282,9 +288,12 @@ if __name__ == "__main__":
     parser.add_argument(
         "-l", "--length", type=float, default=100., 
         help="Length in seconds to download and plot")
+    parser.add_argument(
+        "-o", "--output", type=str, required=False, 
+        help="File output to, otherwise, will show")
 
     args = parser.parse_args()
 
     Picker(
         event_id=args.eventid, n_stations=args.n_stations, 
-        length=args.length).pick()
+        length=args.length).pick(output=args.output)
