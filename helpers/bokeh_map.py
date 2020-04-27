@@ -9,6 +9,7 @@ from collections import namedtuple
 
 from obspy import Inventory, UTCDateTime
 from obspy.clients.fdsn import Client
+from obspy.geodetics import gps2dist_azimuth
 
 from bokeh.plotting import figure, show, output_file, save
 from bokeh.layouts import column, row
@@ -16,6 +17,7 @@ from pyproj import Proj, transform
 from bokeh.models import (
     WMTSTileSource, HoverTool, ColumnDataSource, CustomJS, Slider, 
     PointDrawTool, LabelSet)
+from bokeh.tile_providers import CARTODBPOSITRON, get_provider
 
 
 Station = namedtuple("station", ["code", "latitude", "longitude"])
@@ -24,7 +26,7 @@ Station = namedtuple("station", ["code", "latitude", "longitude"])
 class CircleMap():
     _proj_in = Proj(init='epsg:4326')
     _map_proj = Proj(init='epsg:3857')
-    _precision = 1000 # Precision of locations in meters
+    _precision = 500 # Precision of locations in meters
     _slider_step = 0.1 # Slider step size in km
     def __init__(self, inventory: Inventory):
         self.stations = {Station(sta.code, chan.latitude, chan.longitude)
@@ -60,14 +62,16 @@ class CircleMap():
 
     def plot(
         self,
-        plot_height: int = 600, 
-        plot_width: int = 600,
+        plot_height: int = 900, 
+        plot_width: int = 900,
         output: str = None,
     ):
         #TODO: hovertool to give lat, lon of cursor so students can read off location
         # Set up map options
         map_hover = HoverTool(
             tooltips=[
+                ("x", "@x{0.00}"),
+                ("y", "@y{0.00}"),
                 ("Latitude", "@lats"),
                 ("Longitude", "@lons")], names=["locs"])
         map_options = dict(
@@ -98,11 +102,15 @@ class CircleMap():
 
         # Make map
         map_plot = figure(
-            title="Seismographs", x_range=map_x_range, y_range=map_y_range,
-            x_axis_type="mercator", y_axis_type="mercator", **map_options)
-        url = 'http://a.basemaps.cartocdn.com/rastertiles/voyager/{Z}/{X}/{Y}.png'
-        attribution = "Tiles by Carto, under CC BY 3.0. Data by OSM, under ODbL"
-        map_plot.add_tile(WMTSTileSource(url=url, attribution=attribution))
+            title="Seismographs - WebMercator projection bias: distances somewhat inaccurate",
+            x_range=map_x_range, y_range=map_y_range,
+            x_axis_type="mercator", y_axis_type="mercator", match_aspect=True,
+            **map_options)
+        # url = 'http://a.basemaps.cartocdn.com/rastertiles/voyager/{Z}/{X}/{Y}.png'
+        # attribution = "Tiles by Carto, under CC BY 3.0. Data by OSM, under ODbL"
+        # map_plot.add_tile(WMTSTileSource(url=url, attribution=attribution))
+        tile_provider = get_provider(CARTODBPOSITRON)
+        map_plot.add_tile(tile_provider)
 
         # Plot stations
         station_source = ColumnDataSource({
@@ -138,13 +146,24 @@ class CircleMap():
         # Make circles
         sliders = []
         for station, x, y in zip(self.stations, self.x, self.y):
+            # Work out a rough bias in distance due to Web Mercator projection
+            dist, _, _ = gps2dist_azimuth(
+                station.latitude, station.longitude,
+                station.latitude, station.longitude + 1)
+            # dist is distance in km for 1 degree
+            _x, _y = transform(
+                self._proj_in, self._map_proj, station.longitude + 1,
+                station.latitude)
+            map_dist = abs(x - _x)
+            scale_factor = map_dist / dist
             _source = ColumnDataSource({
                 "x": [x], "y": [y], "lats": [station.latitude],
                 "lons": [station.longitude], "codes": [station.code],
                 "radius": [10000]})
             circle = map_plot.circle(
-                x='x', y='y', source=_source, radius=10000, 
-                line_color="red", fill_alpha=0.0, line_alpha=1.0)
+                x='x', y='y', source=_source, radius=10000 * scale_factor, 
+                line_color="red", fill_alpha=0.0, line_alpha=1.0,
+                radius_dimension="x")
             
             slider = Slider(
                 start=1, end=100, value=10.0, step=self._slider_step, 
@@ -152,7 +171,7 @@ class CircleMap():
 
             callback = CustomJS(
                 args=dict(renderer=circle), 
-                code="renderer.glyph.radius = cb_obj.value * 1000;")
+                code=f"renderer.glyph.radius = cb_obj.value * 1000 * {scale_factor};")
 
             slider.js_on_change('value', callback)            
             sliders.append(slider)
