@@ -36,12 +36,6 @@ class Picker():
     
     """
     _response_removed = False
-    _tools = ["pan", "box_zoom", "undo", "redo", "reset", "save", HoverTool(
-        tooltips=[
-            ("UTC Date Time", '@x{%Y/%m/%d %H:%M:%S.%3N}'),
-            ("Amplitude", "@y")],
-        formatters={'@x': 'datetime'},
-        mode='vline')]
 
     def __init__(
             self, 
@@ -67,11 +61,24 @@ class Picker():
             n_stations=n_stations, all_components=all_components, 
             length=length, pre_pick=pre_pick)
         self._get_inventory()
+        self.amplitude_units = "counts"
         if wood_anderson:
             self.wood_anderson()
+            self.amplitude_units = "m"
 
     def __repr__(self):
         return f"Picker(event_id={self.event_id})"
+
+    @property
+    def _tools(self):
+        tools =  [
+            "pan", "box_zoom", "undo", "redo", "reset", "save", HoverTool(
+                tooltips=[
+                    ("UTC Date Time", '@x{%Y/%m/%d %H:%M:%S.%3N}'),
+                    (f"Amplitude ({self.amplitude_units})", "@y")],
+                formatters={'@x': 'datetime'},
+                mode='vline')]
+        return tools
 
     def _get_st(
             self, 
@@ -183,7 +190,7 @@ class Picker():
         p1 = figure(
              x_range=[min_time, max_time], **plot_options)
         p1.background_fill_color = "lightgrey"
-        p1.yaxis.axis_label = None
+        p1.yaxis.axis_label = f"{self.amplitude_units}"
         p1.xaxis.axis_label = None
         p1.min_border_bottom = 0
         p1.min_border_top = 0
@@ -233,7 +240,7 @@ class Picker():
         for i, tr in enumerate(self.st[1:]):
             p = figure(x_range=p1.x_range, **plot_options)
             p.background_fill_color = "lightgrey"
-            p.yaxis.axis_label = None
+            p.yaxis.axis_label = f"{self.amplitude_units}"
             p.xaxis.axis_label = None
             p.min_border_bottom = 0
             p.min_border_top = 0
