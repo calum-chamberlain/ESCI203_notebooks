@@ -10,7 +10,13 @@ examples at the links below.
 ### Lab 1
 - [Phase identification](static/picker.html)
 - [Earthquake location with circles](static/circle_location.html)
-### Lab 2-4...
+### Lab 2
+- [LYTT GPS Viewer](static/LYTT_GPS.html)
+- [HOKI GPS Viewer](static/HOKI_GPS.html)
+- [GISB GPS Viewer](static/GISB_GPS.html)
+- [TAUP GPS Viewer](static/TAUP_GPS.html)
+- [TGTK GPS Viewer](static/TGTK_GPS.html)
+### Lab 3-4...
 - To be completed
 
 ## Running the notebooks (for further customisation)
