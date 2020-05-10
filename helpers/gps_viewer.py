@@ -169,7 +169,7 @@ class GPSViewer():
         p.toolbar.active_tap = draw_tool
 
         tabledatetimeformatter = DateFormatter(format="%Y/%m/%d")
-        columns = [TableColumn(field="x", title="Time", 
+        columns = [TableColumn(field="x", title="Date", 
                                formatter=tabledatetimeformatter),
                    TableColumn(field="y", title="Offset (mm)", 
                                formatter=NumberFormatter(format="0.00"))]
