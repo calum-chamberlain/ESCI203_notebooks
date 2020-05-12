@@ -69,17 +69,6 @@ class Picker():
     def __repr__(self):
         return f"Picker(event_id={self.event_id})"
 
-    @property
-    def _tools(self):
-        tools =  [
-            "pan", "box_zoom", "undo", "redo", "reset", "save", HoverTool(
-                tooltips=[
-                    ("UTC Date Time", '@x{%Y/%m/%d %H:%M:%S.%3N}'),
-                    (f"Amplitude ({self.amplitude_units})", "@y")],
-                formatters={'@x': 'datetime'},
-                mode='vline')]
-        return tools
-
     def _get_st(
             self, 
             n_stations: int, 
@@ -143,6 +132,23 @@ class Picker():
             plt.show()
         return fig
 
+
+class BokehWaveformViewer():
+    def __init__(self, st: Stream, amplitude_units: str = "Counts"):
+        self.st = st
+        self.amplitude_units = amplitude_units
+
+    @property
+    def _tools(self):
+        tools =  [
+            "pan", "box_zoom", "undo", "redo", "reset", "save", HoverTool(
+                tooltips=[
+                    ("UTC Date Time", '@x{%Y/%m/%d %H:%M:%S.%3N}'),
+                    (f"Amplitude ({self.amplitude_units})", "@y")],
+                formatters={'@x': 'datetime'},
+                mode='vline')]
+        return tools
+    
     def pick(
         self,         
         plot_height: int = 1000, 

@@ -1,9 +1,0 @@
-name: ESCI203
-dependencies:
-  - python=3.7
-  - numpy
-  - obspy
-  - bokeh>=2
-  - jupyter
-  - pyproj
-  - proj4<6
