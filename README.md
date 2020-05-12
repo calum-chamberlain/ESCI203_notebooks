@@ -16,7 +16,10 @@ examples at the links below.
 - [GISB GPS Viewer](static/GISB_GPS.html)
 - [TAUP GPS Viewer](static/TAUP_GPS.html)
 - [TGTK GPS Viewer](static/TGTK_GPS.html)
-### Lab 3-4...
+### Lab 3
+- You will need to open the Focal-Mechanism-Viewer.ipynb notebook.  Click the 
+  button to be taken to the notebooks: [![Binder](https://mybinder.org/badge_logo.svg)](https://mybinder.org/v2/gh/calum-chamberlain/ESCI203_notebooks/master)
+### Lab 4...
 - To be completed
 
 ## Running the notebooks (for further customisation)
