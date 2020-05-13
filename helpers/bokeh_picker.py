@@ -132,6 +132,16 @@ class Picker():
             plt.show()
         return fig
 
+    def pick(
+        self,
+        plot_height: int = 1000, 
+        plot_width: int = 1400,
+        output = None,
+    ):
+        BokehWaveformViewer(
+            self.st, amplitude_units=self.amplitude_units).pick(
+                plot_height=plot_height, plot_width=plot_width, output=output)
+
 
 class BokehWaveformViewer():
     def __init__(self, st: Stream, amplitude_units: str = "Counts"):
