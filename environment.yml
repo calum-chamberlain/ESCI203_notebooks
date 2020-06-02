@@ -47,7 +47,6 @@ dependencies:
   - jupyter_console=6.1.0=py_1
   - jupyter_core=4.6.3=py37hc8dfbb8_1
   - kiwisolver=1.2.0=py37h99015e2_0
-  - ld_impl_linux-64=2.34=h53a641e_0
   - libblas=3.8.0=16_openblas
   - libcblas=3.8.0=16_openblas
   - libffi=3.2.1=he1b5a44_1007
