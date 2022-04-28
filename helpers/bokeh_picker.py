@@ -169,7 +169,7 @@ class BokehWaveformViewer():
         layout = gridplot(trace_plots, ncols=1,
             # [[_trace_plot, _table] 
             #  for _trace_plot, _table in zip(trace_plots, tables)],
-            plot_width=plot_width, plot_height=int(plot_height / len(self.st)))
+            width=plot_width, height=int(plot_height / len(self.st)))
         if output:
             output_file(output, title="Picker")
             save(layout)
