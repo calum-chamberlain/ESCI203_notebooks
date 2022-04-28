@@ -16,7 +16,7 @@ UPS = ("U", "up", "positive", "compressional")
 DOWNS = ("D", "down", "negative", "dilatational")
 
 POLARITY_PROPS = {
-    "up": {"label": "Compressional", "color": "black", "marker": "^"},
+    "up": {"label": "Compressional", "color": "red", "marker": "^"},
     "down": {"label": "Dilatational", "marker": "v", 
              "markeredgecolor": 'black', "markerfacecolor": "white"},
     "unknown": {"label": "Unknown", "color": "black", "marker": "x"}}
